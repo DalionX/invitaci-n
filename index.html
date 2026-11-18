@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invitación · Avengers Doomsday</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;800&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#ffc83d;--gold2:#ff9a1f;--red:#e0261f;--bg:#070504;--ink:#f3eadb;--dim:#9b8f7c;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Sora,system-ui,sans-serif;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% 30%,#2a1208 0,#070504 65%)}
+canvas#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+#app{position:relative;z-index:1;height:100%;max-width:480px;margin:0 auto}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 26px;text-align:center}
+.scr.on{display:flex}
+.bars{position:absolute;top:10px;left:14px;right:14px;display:flex;gap:6px;z-index:5}
+.bars i{flex:1;height:3px;background:#3a2f1a;border-radius:2px}.bars i.f{background:var(--gold)}
+.orb{width:150px;height:150px;margin-bottom:26px;filter:drop-shadow(0 0 18px #ffb52e88)}
+.bub{border:1px solid #8a6a22;background:#0c0906cc;border-radius:12px;padding:20px 22px;font-size:20px;line-height:1.5;text-align:left;width:100%;min-height:92px}
+.bub b,.gold{color:var(--gold);font-weight:600}
+.hint{font-size:11px;letter-spacing:.18em;color:var(--dim);margin-top:14px;text-transform:uppercase}
+.h1{font-family:Orbitron,Sora,sans-serif;font-weight:800;letter-spacing:.14em;font-size:28px;line-height:1.35}
+.hud{border:2px solid var(--red);border-radius:26px;box-shadow:inset 0 0 40px #e0261f55,0 0 22px #e0261f44;position:absolute;inset:34px 8px 8px}
+.tx{font-size:21px;line-height:1.55;font-weight:300;padding:0 6px;min-height:240px}
+.tag{font-size:11px;letter-spacing:.2em;color:var(--gold2);margin-bottom:18px;text-transform:uppercase}
+.q{font-family:Orbitron,Sora,sans-serif;font-weight:500;letter-spacing:.12em;font-size:15px;margin:0}
+.big{font-family:Orbitron,Sora,sans-serif;font-weight:800;font-size:clamp(34px,11vw,52px);line-height:1;letter-spacing:.04em;margin:8px 0}
+.big.a{color:#cfcfcf;-webkit-text-stroke:1px #fff;color:transparent}
+.big.b{color:var(--gold);text-shadow:0 0 18px #ffb52e}
+.row{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:34px;height:64px;position:relative;width:100%}
+.btn{font:600 14px Orbitron,Sora,sans-serif;letter-spacing:.14em;text-transform:uppercase;border:0;border-radius:6px;padding:16px 22px;color:#2a0d00;background:linear-gradient(#ffc83d,#e8501c);box-shadow:0 0 18px #ff9a1f66;cursor:pointer;transition:transform .25s}
+.btn.g{background:transparent;color:var(--ink);border:1px solid #6b5420;box-shadow:none}
+.small{font-size:12px;color:var(--dim);margin-top:18px}
+#no{transition:transform .3s,opacity .4s}
+.ticket{width:230px;margin:0 auto;position:relative;touch-action:none}
+.tk{background:linear-gradient(135deg,#0f2a14,#071007 55%,#0a0a0a);border:1px solid #2f6b3a;border-radius:6px;padding:18px 16px;text-align:left;box-shadow:0 0 24px #1fa04433}
+.tk h2{font-family:Orbitron,sans-serif;font-size:22px;margin:0 0 4px;color:#7dff9a;letter-spacing:.06em}
+.tk p{margin:7px 0;font-size:12px}.tk span{color:#7dff9a;font-weight:600;letter-spacing:.1em}
+.stub{margin-top:-1px;background:#0a120b;border:1px dashed #2f6b3a;border-radius:0 0 6px 6px;padding:12px;font:11px Orbitron,sans-serif;letter-spacing:.3em;color:#7dff9a;cursor:grab;transition:transform .5s,opacity .5s}
+.stub.cut{transform:translateY(140px) rotate(6deg);opacity:.0}
+.cd{display:flex;gap:8px;margin-top:14px}.cd div{flex:1;border:1px solid #4a3a16;border-radius:8px;padding:10px 0;background:#0c0906}
+.cd b{display:block;font:800 24px Orbitron,sans-serif}.cd small{font-size:9px;letter-spacing:.2em;color:var(--dim)}
+.col{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:16px}
+.col .btn{display:block;text-decoration:none;text-align:center;font-size:12px}
+.setup{overflow:auto;justify-content:flex-start;text-align:left}
+.setup label{display:block;font-size:12px;color:var(--gold);letter-spacing:.1em;margin:14px 0 6px;text-transform:uppercase}
+.setup input,.setup textarea{width:100%;background:#120d07;border:1px solid #5a4519;color:var(--ink);border-radius:8px;padding:12px;font:16px Sora,sans-serif}
+.setup textarea{min-height:150px;resize:vertical}
+.edit{position:fixed;top:calc(env(safe-area-inset-top,0px) + 22px);left:12px;z-index:9;background:#0c0906cc;color:var(--dim);border:1px solid #4a3a16;border-radius:20px;font:11px Sora;padding:6px 12px;display:none;cursor:pointer}
+.snd{position:fixed;top:calc(env(safe-area-inset-top,0px) + 22px);right:12px;z-index:9;background:#0c0906cc;color:var(--gold);border:1px solid #4a3a16;border-radius:50%;width:34px;height:34px;font-size:15px;display:none;cursor:pointer}
+.helmet{width:150px;margin-bottom:22px;filter:drop-shadow(0 0 18px #ff9a1f88);transition:transform 1s ease-in,opacity 1s}
+.helmet.on{transform:scale(8);opacity:0}
+@media print{canvas,.edit,.snd,.col,.cd,.small,.bars{display:none!important}body{overflow:visible}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<button class="edit" id="edit">✎ Editar nombres</button>
+<button class="snd" id="snd" aria-label="Música">🔊</button>
+<div id="app">
+
+<section class="scr setup on" id="s0">
+  <h1 class="h1" style="font-size:20px;margin:6px 0 0">Crea tu invitación</h1>
+  <p class="small" style="margin-top:6px">Cambia los nombres y textos; todo se actualiza en la invitación.</p>
+  <label for="to">Nombre de quien recibe</label><input id="to" value="Victor">
+  <label for="from">Tu nombre</label><input id="from" value="Diego">
+  <label for="date">Fecha de la función</label><input id="date" type="date" value="2026-12-17">
+  <label for="movie">Película</label><input id="movie" value="Avengers Doomsday">
+  <label for="cine">Cine</label><input id="cine" value="Por confirmar">
+  <label for="sala">Sala</label><input id="sala" value="Por confirmar">
+  <label for="seat">Asientos</label><input id="seat" value="Por confirmar">
+  <label for="phone">Tu WhatsApp para recibir la respuesta (con código de país, opcional)</label><input id="phone" inputmode="tel" placeholder="51999999999">
+  <label for="mf">Música (opcional, solo para probar aquí)</label><input id="mf" type="file" accept="audio/*">
+  <p class="small" style="margin:6px 0 0">Para el enlace compartido, sube un archivo llamado musica.mp3 junto a index.html en GitHub. Si no hay archivo, suena una música ambiental incluida.</p>
+  <label for="msg">Mensaje</label>
+  <textarea id="msg">A ver, a ver… ¿qué es esa cara? Tranquila, ya llegué. Hice los cálculos, revisé cada escenario posible… y en todos terminas diciéndome que sí. Así que no lo pienses tanto. Palomitas grandes, asientos del medio, y yo invito. Bueno, tú pones la sonrisa, que es la parte más importante.</textarea>
+  <button class="btn" id="go" style="margin-top:22px;width:100%">Ver invitación</button>
+  <button class="btn g" id="mk" style="margin-top:12px;width:100%">Generar enlace para compartir</button>
+  <input id="lk" readonly style="display:none;margin-top:12px;font-size:12px" aria-label="Enlace generado">
+  <p class="small" id="lknote" style="display:none">Enlace copiado. Pégalo en WhatsApp: quien lo abra verá la invitación con estos nombres. Funciona al subir la página a GitHub Pages.</p>
+</section>
+
+<section class="scr" id="s1">
+  <svg class="helmet" id="helm" viewBox="0 0 120 140"><path d="M60 6C28 6 14 30 14 62V96C14 112 26 128 44 134H76C94 128 106 112 106 96V62C106 30 92 6 60 6Z" fill="#c8281e" stroke="#ffc83d" stroke-width="2"/><path d="M26 50H94L90 100C88 112 76 122 60 126C44 122 32 112 30 100Z" fill="#e8b02c"/><path d="M60 6V48" stroke="#ffc83d" stroke-width="2"/><path d="M34 64L54 68L52 76L36 74Z M86 64L66 68L68 76L84 74Z" fill="#fff6d6" style="filter:drop-shadow(0 0 4px #fff)"/><path d="M48 104H72M50 111H70" stroke="#8a5a10" stroke-width="2"/></svg>
+  <div class="bub" id="b1"></div><div class="hint" id="h1">‹ toca para seguir ›</div>
+</section>
+
+<section class="scr" id="s2">
+  <div class="hud"></div>
+  <div class="h1" style="position:relative">TIENES UN<br>MENSAJE<br>DE <span class="gold" data-v="from"></span></div>
+  <div class="hint" style="position:relative;margin-top:50px">Toca para continuar ›</div>
+</section>
+
+<section class="scr" id="s3">
+  <div class="hud"></div>
+  <div style="position:relative;width:100%;padding:0 12px">
+    <div class="tag">● Transmisión entrante · <span data-v="from"></span></div>
+    <div class="tx" id="tx"></div>
+    <div class="hint">Toca para continuar ›</div>
+  </div>
+</section>
+
+<section class="scr" id="s4">
+  <div class="h1" style="font-size:22px">UNA CITA.<br>UNA PELÍCULA.<br><span class="gold" style="opacity:.8">TÚ Y YO.</span></div>
+</section>
+
+<section class="scr" id="s5">
+  <svg class="orb" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffc83d" stroke-width="2" stroke-dasharray="2 3"/><circle cx="50" cy="50" r="34" fill="none" stroke="#ff9a1f" stroke-width="5"/><circle cx="50" cy="50" r="20" fill="#ffc83d" opacity=".9"/><circle cx="50" cy="50" r="9" fill="#fff6d6"/></svg>
+  <p class="q">¿QUIERES IR A VER</p>
+  <div id="mv"></div>
+  <p class="q">CONMIGO?</p>
+  <div class="row"><button class="btn" id="yes">Sí, quiero 🍿</button><button class="btn g" id="no">No</button></div>
+  <div class="small">Función: <b id="fd"></b> · faltan <span id="fl"></span> días</div>
+</section>
+
+<section class="scr" id="s6">
+  <div class="ticket" id="tkt">
+    <div class="tk">
+      <div style="font-size:10px;letter-spacing:.2em;color:#7dff9a">TE INVITO A VER</div>
+      <h2 id="tmv"></h2>
+      <p>CINE: <span id="tc"></span></p><p>SALA: <span id="ts"></span></p><p>ASIENTOS: <span id="ta"></span></p>
+      <p style="font-style:italic;color:var(--dim)">“Mi lugar favorito es a tu lado”</p>
+    </div>
+    <div class="stub" id="stub">||||| |||| ||||</div>
+  </div>
+  <div class="small" style="color:var(--gold)">✂ Desliza el talón hacia abajo para cortarlo</div>
+</section>
+
+<section class="scr" id="s7">
+  <p style="font-size:18px;margin:0"><span class="gold" data-v="from"></span> ya sabe que dijiste que sí 💚<br>¡Prepárate para la función!</p>
+  <div class="cd"><div><b id="cdD">0</b><small>DÍAS</small></div><div><b id="cdH">0</b><small>HORAS</small></div><div><b id="cdM">0</b><small>MIN</small></div><div><b id="cdS">0</b><small>SEG</small></div></div>
+  <div class="small" style="margin-top:8px">para la función</div>
+  <div class="col">
+    <button class="btn" onclick="window.print()">🖨 Descargar para imprimir</button>
+    <a class="btn g" id="wa" target="_blank" rel="noopener">💬 Responderle a <span data-v="from"></span></a>
+    <a class="btn g" id="cal" target="_blank" rel="noopener">📅 Agendar la función</a>
+    <button class="btn g" id="again">Ver la invitación otra vez</button>
+  </div>
+  <div class="small" style="font-size:10px">Invitación de regalo hecha por <span data-v="from"></span>. No es una entrada oficial. Avengers: Doomsday es una película de Marvel Studios.</div>
+</section>
+
+</div>
+<div class="bars" id="bars" style="display:none"><i></i><i></i><i></i><i></i></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const S={};let step=0,typing=null,tstep=0;
+const M=["¡Hola, {to}","Soy el asistente de <b>{from}</b>.","El mensaje de <b>{from}</b> está guardado dentro del casco. Póntelo para escucharlo."];
+const esc=t=>t.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function read(){["to","from","date","movie","cine","sala","seat","phone","msg"].forEach(k=>S[k]=$("#"+k).value.trim())}
+function fill(){
+  $$("[data-v=from]").forEach(e=>e.textContent=S.from);
+  const w=S.movie.split(" "),h=Math.ceil(w.length/2);
+  $("#mv").innerHTML=`<div class="big a">${esc(w.slice(0,h).join(" "))}</div><div class="big b">${esc(w.slice(h).join(" "))}</div>`;
+  $("#tmv").textContent=S.movie;$("#tc").textContent=S.cine;$("#ts").textContent=S.sala;$("#ta").textContent=S.seat;
+  const d=new Date(S.date+"T20:00:00");
+  $("#fd").textContent=d.toLocaleDateString("es",{weekday:"short",day:"numeric",month:"short"});
+  $("#fl").textContent=Math.max(0,Math.ceil((d-Date.now())/864e5));
+  $("#wa").href=S.phone?`https://wa.me/${S.phone.replace(/\D/g,"")}?text=`+encodeURIComponent(`¡Sí quiero ir a ver ${S.movie} contigo! 🍿 – ${S.to}`):"#";
+  const f=x=>x.toISOString().replace(/[-:]|\.\d{3}/g,"");
+  $("#cal").href=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(S.movie+" con "+S.from)}&dates=${f(d)}/${f(new Date(+d+3*36e5))}`;
+}
+function show(n){
+  $$(".scr").forEach(s=>s.classList.remove("on"));$("#s"+n).classList.add("on");step=n;
+  $("#bars").style.display=n?"flex":"none";$("#edit").style.display=n&&!shared?"block":"none";
+  const p=n<=3?1:n==4?2:n==5?3:4;$$("#bars i").forEach((b,i)=>b.classList.toggle("f",i<p));
+  $("#snd").style.display=n?"block":"none";if(n&&gesture&&!started&&!muted)musicOn();
+  if(n==1){tstep=0;$("#helm").classList.remove("on");line()}
+  if(n==3)type($("#tx"),esc(S.msg));
+  if(n==4)setTimeout(()=>step==4&&show(5),3600);
+  if(n==7)tick();
+}
+function type(el,html,cb){
+  clearInterval(typing);el.innerHTML="";let i=0;const plain=html;
+  el._full=plain;el._cb=cb;
+  typing=setInterval(()=>{i++;el.innerHTML=plain.slice(0,i);if(i>=plain.length){clearInterval(typing);typing=null}},28);
+}
+function done(el){if(typing){clearInterval(typing);typing=null;el.innerHTML=el._full;return false}return true}
+function line(){type($("#b1"),M[tstep].replace("{to}",esc(S.to)).replace(/\{from\}/g,esc(S.from)))}
+function tick(){
+  clearInterval(tick.t);const d=new Date(S.date+"T20:00:00");
+  const u=()=>{let t=Math.max(0,d-Date.now())/1e3|0;const p=n=>String(n).padStart(2,"0");
+    $("#cdD").textContent=p(t/86400|0);$("#cdH").textContent=p(t%86400/3600|0);$("#cdM").textContent=p(t%3600/60|0);$("#cdS").textContent=p(t%60)};
+  u();tick.t=setInterval(u,1000);
+}
+// música
+const au=new Audio("musica.mp3");au.loop=true;au.volume=.6;
+let useSynth=false,muted=false,started=false,gesture=false,ac=null,arp=null,note=null;
+addEventListener("pointerdown",()=>{gesture=true;if(step>=1&&!started&&!muted)musicOn()},{once:true});
+au.onerror=()=>{useSynth=true;if(started&&!muted)synthOn()};
+function synthOn(){try{
+  if(!ac){ac=new(window.AudioContext||window.webkitAudioContext)();const g=ac.createGain();g.gain.value=.12;g.connect(ac.destination);
+    const f=ac.createBiquadFilter();f.type="lowpass";f.frequency.value=400;f.connect(g);
+    [55,82.4,110].forEach(fr=>{const o=ac.createOscillator();o.type="sawtooth";o.frequency.value=fr;o.detune.value=Math.random()*8-4;o.connect(f);o.start()});
+    const N=[220,261.6,329.6,392,440,329.6,261.6,196];let i=0;
+    note=()=>{const o=ac.createOscillator(),e=ac.createGain(),t=ac.currentTime;o.type="sine";o.frequency.value=N[i++%N.length];e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(.18,t+.05);e.gain.exponentialRampToValueAtTime(.0001,t+1.6);o.connect(e);e.connect(g);o.start(t);o.stop(t+1.7)}}
+  ac.resume();clearInterval(arp);arp=setInterval(note,700)}catch(e){}}
+function synthOff(){clearInterval(arp);if(ac)ac.suspend()}
+function musicOn(){started=true;muted=false;$("#snd").textContent="🔊";if(useSynth)synthOn();else au.play().catch(()=>{useSynth=true;synthOn()})}
+function musicOff(){muted=true;$("#snd").textContent="🔇";au.pause();synthOff()}
+$("#snd").onclick=()=>muted?musicOn():musicOff();
+$("#mf").onchange=e=>{const f=e.target.files[0];if(!f)return;au.src=URL.createObjectURL(f);useSynth=false;synthOff();if(started&&!muted)au.play()};
+$("#go").onclick=()=>{read();fill();show(1)};
+const KEYS=["to","from","date","movie","cine","sala","seat","phone","msg"];
+$("#mk").onclick=()=>{read();const p=new URLSearchParams();KEYS.forEach(k=>S[k]&&p.set(k,S[k]));const u=location.origin+location.pathname+"?"+p;const o=$("#lk");o.value=u;o.style.display="block";$("#lknote").style.display="block";o.select();try{navigator.clipboard.writeText(u)}catch(e){}};
+const qs=new URLSearchParams(location.search);
+const shared=qs.has("to")||qs.has("from");
+if(shared){KEYS.forEach(k=>qs.has(k)&&($("#"+k).value=qs.get(k)));read();fill();show(1)}
+$("#edit").onclick=()=>{clearInterval(typing);typing=null;$("#bars").style.display="none";$("#edit").style.display="none";$$(".scr").forEach(s=>s.classList.remove("on"));$("#s0").classList.add("on");step=0};
+$("#s1").onclick=()=>{const b=$("#b1");if(!done(b))return;if(++tstep<M.length)line();else{const h=$("#helm");if(h.classList.contains("on"))return;h.classList.add("on");setTimeout(()=>show(2),900)}};
+$("#s2").onclick=()=>show(3);
+$("#s3").onclick=()=>{if(done($("#tx")))show(4)};
+$("#again").onclick=()=>show(1);
+let nn=0;const T=["¿Segur@? 😏","Piénsalo bien…"];
+function dodge(e){e&&e.preventDefault();nn++;const n=$("#no"),y=$("#yes");
+  if(nn<=2){n.textContent=T[nn-1];y.style.transform=`scale(${1+nn*.12})`}
+  else{n.style.opacity=0;n.style.pointerEvents="none";y.style.transform="scale(1.25)"}}
+$("#no").onclick=dodge;
+$("#yes").onclick=()=>show(6);
+// cortar el talón
+let y0=null;const stub=$("#stub");
+stub.addEventListener("pointerdown",e=>{y0=e.clientY;stub.setPointerCapture(e.pointerId)});
+stub.addEventListener("pointermove",e=>{if(y0!==null&&e.clientY-y0>50){y0=null;stub.classList.add("cut");setTimeout(()=>show(7),700)}});
+stub.addEventListener("pointerup",()=>y0=null);
+stub.addEventListener("dblclick",()=>{stub.classList.add("cut");setTimeout(()=>show(7),700)});
+// chispas doradas
+const cv=$("#fx"),c=cv.getContext("2d");let P=[];
+function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener("resize",rs);
+for(let i=0;i<55;i++)P.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*2+.5,v:Math.random()*.4+.1,a:Math.random()});
+(function loop(){c.clearRect(0,0,cv.width,cv.height);
+  for(const p of P){p.y-=p.v;p.a+=.02;if(p.y<-5){p.y=cv.height+5;p.x=Math.random()*cv.width}
+    c.fillStyle=`rgba(255,200,61,${.25+.5*Math.abs(Math.sin(p.a))})`;c.beginPath();c.arc(p.x,p.y,p.r,0,7);c.fill()}
+  requestAnimationFrame(loop)})();
+</script>
+</body>
+</html>
